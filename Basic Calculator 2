@@ -1,0 +1,112 @@
+#[derive(Clone, Copy, PartialEq, Eq)]
+
+enum Token {
+    Number(i32),
+    Add,
+    Sub,
+    Mul,
+    Div,
+}
+
+impl Token {
+    fn as_number(&self) -> i32 {
+        match self {
+            Self::Number(n) => *n,
+            _ => panic!("not number"),
+        }
+    }
+}
+
+impl Solution {
+    pub fn calculate(s: String) -> i32 {
+        let mut tokens = Vec::new();
+        let mut skip = 0;
+
+        for (i, ch) in s.char_indices() {
+            if i < skip {
+                continue;
+            }
+
+            match ch {
+                ' ' => {},
+                '+' => {
+                    tokens.push(Token::Add);
+                },
+                '-' => {
+                    tokens.push(Token::Sub);
+                },
+                '*' => {
+                    tokens.push(Token::Mul);
+                },
+                '/' => {
+                    tokens.push(Token::Div);
+                },
+                _ => {
+                    let end = s[i..].find(|ch: char| {
+                        !ch.is_ascii_digit()
+                    });
+
+                    let n = match end {
+                        Some(end) => {
+                            skip = i + end;
+                            s[i..i + end].parse().unwrap()
+                        },
+                        None => {
+                            skip = s.len();
+                            s[i..].parse().unwrap()
+                        },
+                    };
+
+                    tokens.push(Token::Number(n));
+                },
+            }
+        }
+
+        let mut ex_tokens = Vec::<Token>::new();
+        skip = 0;
+
+        for (i, &token) in tokens.iter().enumerate() {
+            if i < skip {
+                continue;
+            }
+
+            if token == Token::Mul {
+                let a = ex_tokens.pop().unwrap().as_number();
+                let b = tokens[i + 1].as_number();
+                skip = i + 2;
+                ex_tokens.push(Token::Number(a * b));
+            } else if token == Token::Div {
+                let a = ex_tokens.pop().unwrap().as_number();
+                let b = tokens[i + 1].as_number();
+                skip = i + 2;
+                ex_tokens.push(Token::Number(a / b));
+            } else {
+                ex_tokens.push(token);
+            }
+        }
+
+        let mut total: i32 = 0;
+        let mut add = true;
+
+        for token in ex_tokens {
+            match token {
+                Token::Number(n) => {
+                    if add {
+                        total += n;
+                    } else {
+                        total -= n;
+                    }
+                },
+                Token::Add => {
+                    add = true
+                },
+                Token::Sub => {
+                    add = false;
+                },
+                _ => unreachable!(),
+            }
+        }
+
+        total
+    }
+}
