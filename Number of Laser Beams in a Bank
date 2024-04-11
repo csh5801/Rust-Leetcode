@@ -1,0 +1,28 @@
+impl Solution {
+    pub fn number_of_beams(bank: Vec<String>) -> i32 {
+        let mut count = Vec::new();
+        let mut n = 0;
+        let mut ans = 0;
+
+        for (i, l) in bank.iter().enumerate() {
+            n = l.chars().into_iter().filter(|ch| *ch == '1').count();
+
+            if n > 0 {
+                count.push(n);
+            }
+        }
+
+        if count.len() < 2 {
+            return 0;
+        }
+
+        let mut prev = 0;
+
+        for m in count {
+            ans += prev * m;
+            prev = m;
+        }
+
+        ans as i32
+    }
+}
