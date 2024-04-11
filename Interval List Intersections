@@ -1,0 +1,31 @@
+impl Solution {
+    pub fn interval_intersection(first_list: Vec<Vec<i32>>, second_list: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+        let mut ans = Vec::new();
+
+        let mut a_iter = first_list.into_iter();
+        let mut b_iter = second_list.into_iter();
+
+        let mut a_opt = a_iter.next();
+        let mut b_opt = b_iter.next();
+
+        while let (Some(a), Some(b)) = (a_opt.as_ref(), b_opt.as_ref()) {
+            if a[0] <= b[0] && a[1] >= b[1] {
+                ans.push(vec![b[0], b[1]]);
+            } else if b[0] <= a[0] && b[1] >= a[1] {
+                ans.push(vec![a[0], a[1]]);
+            } else if b[0] <= a[1] && b[0] >= a[0] {
+                ans.push(vec![b[0], a[1]]);
+            } else if a[0] <= b[1] && a[0] >= b[0] {
+                ans.push(vec![a[0], b[1]]);
+            }
+
+            if a[1] < b[1] {
+                a_opt = a_iter.next();
+            } else {
+                b_opt = b_iter.next();
+            }
+        }
+        
+        ans
+    }
+}
