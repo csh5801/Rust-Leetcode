@@ -1,0 +1,36 @@
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn find_duplicate(paths: Vec<String>) -> Vec<Vec<String>> {
+        let mut groups = HashMap::<_, Vec<_>>::new();
+
+        for path in &paths {
+            for (file, content) in parse_path(path) {
+                groups.entry(content).or_default().push(file);
+            }
+        }
+
+        groups.into_iter()
+            .map(|(_, files)| files)
+            .filter(|files| files.len() > 1)
+            .collect()
+    }
+}
+
+fn parse_path(s: &str) -> Vec<(String, &str)> {
+    let mut output = Vec::new();
+    let mut parts = s.split(' ');
+
+    let dir = parts.next().unwrap();
+
+    for part in parts {
+        let (file, content) = part.split_once('(').unwrap();
+        let content = content.trim_end_matches(')');
+        output.push((
+            format!("{dir}/{file}"), 
+            content
+        ));
+    }
+
+    output
+}
