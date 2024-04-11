@@ -1,0 +1,20 @@
+use std::collections::HashMap;
+use std::cmp::Reverse;
+
+impl Solution {
+    pub fn top_k_frequent(nums: Vec<i32>, k: i32) -> Vec<i32> {
+        let mut count = HashMap::<_, usize>::new();
+        
+        for n in nums {
+            *count.entry(n).or_default() += 1;
+        }
+
+        let mut count = count.into_iter().collect::<Vec<_>>();
+
+        count.sort_by_key(|(_, v)| Reverse(*v));
+
+        count.truncate(k as usize);
+
+        count.into_iter().map(|(k, _)| k).collect()
+    }
+}
