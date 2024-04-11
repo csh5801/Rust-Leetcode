@@ -1,0 +1,13 @@
+use std::collections::HashSet;
+
+impl Solution {
+    pub fn find_difference(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<Vec<i32>> {
+        let hash1 = nums1.into_iter().collect::<HashSet<i32>>();
+        let hash2 = nums2.into_iter().collect::<HashSet<i32>>();
+
+        let diff1 = hash1.difference(&hash2).copied().collect();
+        let diff2 = hash2.difference(&hash1).copied().collect();
+
+        vec![diff1, diff2]
+    }
+}
