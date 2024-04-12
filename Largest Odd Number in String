@@ -1,0 +1,15 @@
+impl Solution {
+    pub fn largest_odd_number(num: String) -> String {
+        let mut num = num.parse::<u128>().unwrap();
+
+        while num > 0 {
+            if num % 2 == 1 {
+                return num.to_string();
+            } else {
+                num /= 10;
+            }
+        }
+
+        "".to_string()
+    }
+}
